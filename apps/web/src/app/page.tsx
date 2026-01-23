@@ -12,6 +12,7 @@ type Friend = {
   name: string | null
   email: string
   image: string | null
+  unreadCount?: number
 }
 
 export default function Home() {
@@ -96,6 +97,7 @@ export default function Home() {
               </div>
               <div className="flex-1 min-h-0 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
                 <Chat
+                  key={selectedFriend.id}
                   userId={session?.user?.id || ""}
                   token={session?.user?.socketToken || ""}
                   friendId={selectedFriend.id}

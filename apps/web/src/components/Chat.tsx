@@ -149,13 +149,15 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
             }
         })
 
-        socket.on("draft_update", (data: { senderId: string; text: string }) => {
+        socket.on("draft_update", (data: { senderId: string; text: string; conversationId?: string }) => {
+            if (data.conversationId && conversationIdRef.current && data.conversationId !== conversationIdRef.current) return
             if (data.senderId !== userId) {
                 setDrafts((prev) => ({ ...prev, [data.senderId]: data.text }))
             }
         })
 
-        socket.on("draft_clear", (data: { userId: string }) => {
+        socket.on("draft_clear", (data: { userId: string; conversationId?: string }) => {
+            if (data.conversationId && conversationIdRef.current && data.conversationId !== conversationIdRef.current) return
             if (data.userId !== userId) {
                 setDrafts((prev) => {
                     const newDrafts = { ...prev }
@@ -165,7 +167,8 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
             }
         })
 
-        socket.on("consent_update", (data: { userId: string, enabled: boolean }) => {
+        socket.on("consent_update", (data: { userId: string, enabled: boolean; conversationId?: string }) => {
+            if (data.conversationId && conversationIdRef.current && data.conversationId !== conversationIdRef.current) return
             console.log(`User ${data.userId} toggled live mode: ${data.enabled}`)
         })
 

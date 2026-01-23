@@ -61,6 +61,9 @@ export const setupSocketHandlers = (io: Server) => {
         }
         onlineUsers.get(userId)?.add(socket.id);
 
+        // Join personal user room for notifications
+        socket.join(`user_${userId}`);
+
         socket.on('join_room', async (conversationId: string, callback?: (response: any) => void) => {
             try {
                 // Validate conversation ID format basic check
@@ -126,6 +129,14 @@ export const setupSocketHandlers = (io: Server) => {
 
                 // Emit to room (including sender to confirm delivery/replace optimistic)
                 io.to(conversationId).emit('message_new', { ...message, tempId });
+
+                // Also emit to recipient's personal room for UNREAD BADGES (if they are not in the conversation)
+                // Identify the other user
+                const parts = conversationId.replace('conv_', '').split('_');
+                const recipientId = parts.find(p => p !== userId);
+                if (recipientId) {
+                    io.to(`user_${recipientId}`).emit('message_new', { ...message, tempId });
+                }
 
                 // Clear draft
                 const key = `draft:${conversationId}:${userId}`;
