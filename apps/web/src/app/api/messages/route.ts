@@ -16,6 +16,8 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: "Missing conversationId" }, { status: 400 })
         }
 
+        const userId = session.user.id
+
         // Verify user is a member of this conversation
         const membership = await prisma.conversation.findUnique({
             where: { id: conversationId },
@@ -26,7 +28,7 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: "Conversation not found" }, { status: 404 })
         }
 
-        const isMember = membership.members.some(m => m.userId === session.user.id)
+        const isMember = membership.members.some(m => m.userId === userId)
         if (!isMember) {
             // Return empty or error. Better to return error or empty for security.
             return NextResponse.json({ error: "Not authorized for this conversation" }, { status: 403 })
