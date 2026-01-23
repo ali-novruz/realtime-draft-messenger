@@ -72,6 +72,17 @@ export const setupSocketHandlers = (io: Server) => {
                 await socket.join(conversationId);
                 console.log(`User ${userId} joined room: ${conversationId}`);
 
+                // Send initial presence of the other user in this conversation
+                const parts = conversationId.replace('conv_', '').split('_');
+                const otherUserId = parts.find(p => p !== userId);
+                if (otherUserId) {
+                    const isOnline = onlineUsers.has(otherUserId);
+                    socket.emit('user_status', {
+                        userId: otherUserId,
+                        status: isOnline ? 'online' : 'offline'
+                    });
+                }
+
                 // Ack to client
                 if (callback) callback({ status: 'ok', conversationId });
             } catch (error) {

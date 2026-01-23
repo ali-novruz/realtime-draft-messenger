@@ -49,14 +49,8 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
             const cid = `conv_${ids[0]}_${ids[1]}`
             setConversationId(cid)
             conversationIdRef.current = cid
-
-            // Critical Fix: Join room immediately when conversation changes
-            if (socket && socket.connected) {
-                console.log(`Joining room: ${cid}`)
-                socket.emit("join_room", cid)
-            }
         }
-    }, [userId, friendId, socket])
+    }, [userId, friendId])
 
     // Fetch messages & Mark as Seen on Load
     useEffect(() => {
@@ -70,7 +64,7 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
                     if (data.messages) {
                         setMessages(data.messages)
                         // Mark as seen immediately if we have messages from others
-                        if (socket && isConnected) {
+                        if (socket && socket.connected) {
                             socket.emit("mark_seen", { conversationId })
                         }
                     }
@@ -81,18 +75,21 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
         }
 
         fetchMessages()
-    }, [conversationId, socket, isConnected])
+    }, [conversationId, socket]) // Removed isConnected to avoid double-fetch loops, socket ref is stable enough
 
+    // Socket Event Handlers & Room Management
     useEffect(() => {
-        if (!socket) return
+        if (!socket || !conversationId) return
+
+        const joinRoom = () => {
+            console.log(`Joining room: ${conversationId}`)
+            socket.emit("join_room", conversationId)
+        }
 
         const onConnect = () => {
             console.log("✅ Socket connected! (Chat Component)")
             setIsConnected(true)
-            // Join room
-            if (conversationIdRef.current) {
-                socket.emit("join_room", conversationIdRef.current)
-            }
+            joinRoom()
         }
 
         const onDisconnect = () => {
@@ -101,23 +98,37 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
             setIsFriendOnline(false)
         }
 
+        // Setup listeners
         socket.on("connect", onConnect)
         socket.on("disconnect", onDisconnect)
 
-        if (socket.connected) onConnect()
+        // If already connected, join immediately
+        if (socket.connected) {
+            setIsConnected(true)
+            joinRoom()
+        }
 
         // Listen for new messages
         socket.on("message_new", (msg: Message & { tempId?: string }) => {
+            console.log("📩 New message received:", msg) // Debug log
             setMessages((prev) => {
+                // If it's my own message coming back, replace the optimistic one
                 if (msg.tempId) {
-                    return prev.map(m => (m.id === msg.tempId ? msg : m))
+                    const optimisticExists = prev.some(m => m.id === msg.tempId)
+                    if (optimisticExists) {
+                        return prev.map(m => (m.id === msg.tempId ? msg : m))
+                    }
                 }
-                // Mark incoming message as seen immediately if authorized
-                if (msg.senderId !== userId) {
-                    socket.emit("mark_seen", { conversationId: conversationIdRef.current })
-                }
+
+                // If I already have this message ID, skip
                 const exists = prev.some(m => m.id === msg.id)
                 if (exists) return prev
+
+                // Mark as seen if it's from friend
+                if (msg.senderId !== userId) {
+                    socket.emit("mark_seen", { conversationId })
+                }
+
                 return [...prev, msg]
             })
         })
@@ -131,7 +142,7 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
             }
         })
 
-        // Listen for user status (Simple broadcast for MVP)
+        // Listen for user status
         socket.on("user_status", (data: { userId: string, status: 'online' | 'offline' }) => {
             if (data.userId === friendId) {
                 setIsFriendOnline(data.status === 'online')
