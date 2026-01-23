@@ -341,7 +341,7 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
                                     Typing...
                                 </span>
                             </div>
-                            <div className="px-4 py-2.5 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-200 border-2 border-dashed border-emerald-200 dark:border-emerald-800 rounded-2xl rounded-bl-none italic text-sm w-full relative overflow-hidden shadow-sm">
+                            <div className="px-4 py-2.5 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-200 border-2 border-dashed border-emerald-200 dark:border-emerald-800 rounded-2xl rounded-bl-none italic text-sm w-full relative overflow-hidden shadow-sm whitespace-pre-wrap break-words">
                                 {text}
                             </div>
                         </div>
