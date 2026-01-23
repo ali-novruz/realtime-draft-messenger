@@ -51,6 +51,32 @@ export default function Chat({ userId, token, friendId }: ChatProps) {
         }
     }, [userId, friendId])
 
+    // Fetch messages when conversation available
+    useEffect(() => {
+        if (!conversationId) return
+
+        const fetchMessages = async () => {
+            try {
+                const res = await fetch(`/api/messages?conversationId=${conversationId}`)
+                if (res.ok) {
+                    const data = await res.json()
+                    // Set messages, replacing any initial empty state
+                    // Note: If optimistic messages are implemented fully, might need merge logic, 
+                    // but for "load on refresh" this is sufficient.
+                    if (data.messages) {
+                        setMessages(data.messages)
+                    }
+                } else {
+                    console.error("Failed to fetch messages")
+                }
+            } catch (error) {
+                console.error("Error fetching messages:", error)
+            }
+        }
+
+        fetchMessages()
+    }, [conversationId])
+
     useEffect(() => {
         if (!socket) return
 
