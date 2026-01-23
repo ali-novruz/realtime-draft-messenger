@@ -12,6 +12,7 @@ type Message = {
     createdAt?: Date
     sender?: { name?: string; email?: string }
     seenAt?: Date | string | null
+    conversationId?: string
 }
 
 type ChatProps = {
@@ -111,6 +112,10 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
         // Listen for new messages
         socket.on("message_new", (msg: Message & { tempId?: string }) => {
             console.log("📩 New message received:", msg) // Debug log
+
+            // Strict Filter: Only process valid messages for THIS conversation
+            if (msg.conversationId && conversationIdRef.current && msg.conversationId !== conversationIdRef.current) return
+
             setMessages((prev) => {
                 // If it's my own message coming back, replace the optimistic one
                 if (msg.tempId) {
