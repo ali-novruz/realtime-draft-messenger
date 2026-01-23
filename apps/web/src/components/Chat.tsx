@@ -302,7 +302,7 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
                     return (
                         <div key={msg.id || idx} className={cn("flex flex-col max-w-[80%]", isMe ? "ml-auto items-end" : "items-start")}>
                             <div className={cn(
-                                "px-4 py-2.5 shadow-sm text-sm relative group transition-all duration-200",
+                                "px-4 py-2.5 shadow-sm text-sm relative group transition-all duration-200 whitespace-pre-wrap break-words",
                                 isMe
                                     ? "bg-gradient-to-br from-cyan-500 to-blue-600 text-white rounded-2xl rounded-br-none"
                                     : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-none",
