@@ -49,8 +49,14 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
             const cid = `conv_${ids[0]}_${ids[1]}`
             setConversationId(cid)
             conversationIdRef.current = cid
+
+            // Critical Fix: Join room immediately when conversation changes
+            if (socket && socket.connected) {
+                console.log(`Joining room: ${cid}`)
+                socket.emit("join_room", cid)
+            }
         }
-    }, [userId, friendId])
+    }, [userId, friendId, socket])
 
     // Fetch messages & Mark as Seen on Load
     useEffect(() => {
