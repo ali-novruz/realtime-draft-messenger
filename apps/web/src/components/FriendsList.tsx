@@ -132,14 +132,14 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
                 {searchResults.length > 0 && (
                     <div className="mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg max-h-48 overflow-y-auto z-50 relative">
                         {searchResults.map((user) => (
-                            <div key={user.id} className="flex items-center justify-between p-3 hover:bg-slate-50 dark:hover:bg-slate-700 border-b border-slate-100 dark:border-slate-700 last:border-b-0">
+                            <div key={user.id} className="flex items-center justify-between p-3 hover:bg-slate-50 dark:hover:bg-slate-700 border-b border-slate-100 dark:border-slate-700 last:border-b-0 transition-colors duration-200">
                                 <div>
                                     <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{user.name || user.email}</p>
                                     <p className="text-xs text-slate-500">{user.email}</p>
                                 </div>
                                 <button
                                     onClick={() => sendFriendRequest(user.id)}
-                                    className="p-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors"
+                                    className="p-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
                                 >
                                     <UserPlus className="w-4 h-4" />
                                 </button>
@@ -154,7 +154,7 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
                 <button
                     onClick={() => setActiveTab("friends")}
                     className={cn(
-                        "flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2",
+                        "flex-1 py-3 text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer",
                         activeTab === "friends"
                             ? "text-cyan-600 dark:text-cyan-400 border-b-2 border-cyan-600 dark:border-cyan-400"
                             : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
@@ -166,7 +166,7 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
                 <button
                     onClick={() => setActiveTab("requests")}
                     className={cn(
-                        "flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 relative",
+                        "flex-1 py-3 text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2 relative cursor-pointer",
                         activeTab === "requests"
                             ? "text-cyan-600 dark:text-cyan-400 border-b-2 border-cyan-600 dark:border-cyan-400"
                             : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
@@ -175,7 +175,7 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
                     <UserPlus className="w-4 h-4" />
                     Requests
                     {pendingRequests.length > 0 && (
-                        <span className="absolute top-2 right-4 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                        <span className="absolute top-2 right-4 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center animate-pulse">
                             {pendingRequests.length}
                         </span>
                     )}
@@ -198,11 +198,11 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
                                     key={friend.id}
                                     onClick={() => onSelectFriend(friend)}
                                     className={cn(
-                                        "w-full p-4 flex items-center gap-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors",
+                                        "w-full p-4 flex items-center gap-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer",
                                         selectedFriendId === friend.id && "bg-cyan-50 dark:bg-cyan-900/10"
                                     )}
                                 >
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
                                         {(friend.name || friend.email).slice(0, 2).toUpperCase()}
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -224,7 +224,7 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
                         <div className="divide-y divide-slate-100 dark:divide-slate-800">
                             {pendingRequests.map((request) => (
                                 <div key={request.id} className="p-4 flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-sm">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
                                         {(request.sender.name || request.sender.email).slice(0, 2).toUpperCase()}
                                     </div>
                                     <div className="flex-1 min-w-0">
@@ -234,13 +234,13 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => respondToRequest(request.id, "accept")}
-                                            className="p-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
+                                            className="p-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
                                         >
                                             <Check className="w-4 h-4" />
                                         </button>
                                         <button
                                             onClick={() => respondToRequest(request.id, "reject")}
-                                            className="p-2 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
+                                            className="p-2 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-all duration-200 cursor-pointer"
                                         >
                                             <X className="w-4 h-4" />
                                         </button>

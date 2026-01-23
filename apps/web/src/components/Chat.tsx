@@ -266,7 +266,7 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
                     <button
                         onClick={toggleLiveMode}
                         className={cn(
-                            "flex items-center gap-2 px-3 py-1.5 rounded-full transition-all backdrop-blur-sm border text-xs font-medium",
+                            "flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200 backdrop-blur-sm border text-xs font-medium cursor-pointer",
                             isLiveEnabled
                                 ? "bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-200/50 text-white"
                                 : "bg-white/10 hover:bg-white/20 border-white/10 text-white/70"
@@ -296,7 +296,7 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
                     return (
                         <div key={msg.id || idx} className={cn("flex flex-col max-w-[80%]", isMe ? "ml-auto items-end" : "items-start")}>
                             <div className={cn(
-                                "px-4 py-2.5 shadow-sm text-sm relative group transition-all",
+                                "px-4 py-2.5 shadow-sm text-sm relative group transition-all duration-200",
                                 isMe
                                     ? "bg-gradient-to-br from-cyan-500 to-blue-600 text-white rounded-2xl rounded-br-none"
                                     : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-none",
@@ -353,7 +353,7 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
                         onKeyDown={handleKeyDown}
                         placeholder={isLiveEnabled ? "Type to start live drafting..." : "Type a message..."}
                         className={cn(
-                            "w-full pl-4 pr-12 py-3 bg-slate-50 dark:bg-slate-800 border rounded-xl resize-none text-sm focus:ring-2 outline-none transition-all max-h-32 min-h-[50px] dark:text-slate-100",
+                            "w-full pl-4 pr-12 py-3 bg-slate-50 dark:bg-slate-800 border rounded-xl resize-none text-sm focus:ring-2 outline-none transition-all duration-200 max-h-32 min-h-[50px] dark:text-slate-100",
                             isLiveEnabled
                                 ? "border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500/20 bg-emerald-50/30 dark:bg-emerald-950/30 dark:border-emerald-800"
                                 : "border-slate-200 dark:border-slate-700 focus:border-cyan-500 focus:ring-cyan-500/20"
@@ -365,7 +365,7 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
                     <button
                         onClick={() => sendMessage()}
                         disabled={!input.trim() || !isConnected}
-                        className="absolute right-2 bottom-2 p-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg shadow-md hover:shadow-lg disabled:opacity-50 disabled:shadow-none transition-all active:scale-95"
+                        className="absolute right-2 bottom-2 p-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg shadow-md hover:shadow-lg disabled:opacity-50 disabled:shadow-none transition-all duration-200 active:scale-95 cursor-pointer"
                     >
                         <Send className="w-4 h-4" />
                     </button>

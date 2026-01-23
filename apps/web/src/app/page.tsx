@@ -35,10 +35,10 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 flex flex-col transition-colors">
+    <div className="h-full bg-slate-100 dark:bg-slate-950 flex flex-col transition-colors duration-300 overflow-hidden">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300 flex-shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
               <MessageCircle className="w-6 h-6" />
@@ -60,7 +60,7 @@ export default function Home() {
 
             <button
               onClick={() => signOut()}
-              className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+              className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200 cursor-pointer"
               title="Sign Out"
             >
               <LogOut className="w-5 h-5" />
@@ -70,19 +70,21 @@ export default function Home() {
       </header>
 
       {/* Main Content - Split View */}
-      <main className="flex-1 flex flex-col md:flex-row max-w-7xl mx-auto w-full">
+      <main className="flex-1 flex flex-col md:flex-row max-w-7xl mx-auto w-full overflow-hidden p-2 md:p-4 gap-4">
         {/* Left Sidebar - Friends List */}
-        <FriendsList
-          onSelectFriend={setSelectedFriend}
-          selectedFriendId={selectedFriend?.id}
-        />
+        <section className="flex-shrink-0 md:h-full overflow-hidden rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800">
+          <FriendsList
+            onSelectFriend={setSelectedFriend}
+            selectedFriendId={selectedFriend?.id}
+          />
+        </section>
 
         {/* Right Panel - Chat */}
-        <div className="flex-1 flex flex-col bg-slate-50 dark:bg-slate-950 p-6 transition-colors">
+        <section className="flex-1 flex flex-col bg-slate-50 dark:bg-slate-950 p-6 transition-colors duration-300 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden h-full">
           {selectedFriend ? (
-            <div className="flex-1 flex flex-col">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold">
+            <div className="flex-1 flex flex-col min-h-0">
+              <div className="mb-4 flex items-center gap-3 flex-shrink-0">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-sm">
                   {(selectedFriend.name || selectedFriend.email).slice(0, 2).toUpperCase()}
                 </div>
                 <div>
@@ -90,12 +92,14 @@ export default function Home() {
                   <p className="text-sm text-slate-500">{selectedFriend.email}</p>
                 </div>
               </div>
-              <Chat
-                userId={session?.user?.id || ""}
-                token={session?.user?.socketToken || ""}
-                friendId={selectedFriend.id}
-                friendName={selectedFriend.name || selectedFriend.email}
-              />
+              <div className="flex-1 min-h-0 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
+                <Chat
+                  userId={session?.user?.id || ""}
+                  token={session?.user?.socketToken || ""}
+                  friendId={selectedFriend.id}
+                  friendName={selectedFriend.name || selectedFriend.email}
+                />
+              </div>
             </div>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
@@ -109,7 +113,7 @@ export default function Home() {
               </p>
             </div>
           )}
-        </div>
+        </section>
       </main>
     </div>
   )
