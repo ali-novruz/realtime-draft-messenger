@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react"
 import { Search, UserPlus, Check, X, MessageCircle, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useSocket } from "@/lib/socket"
 
 type User = {
     id: string
     name: string | null
     email: string
     image: string | null
+    unreadCount?: number
 }
 
 type Friendship = {
@@ -36,6 +38,33 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
         loadFriends()
         loadRequests()
     }, [])
+
+    // Real-time updates for unread counts
+    const socket = useSocket()
+    useEffect(() => {
+        if (!socket) return
+
+        const handleNewMessage = (msg: any) => {
+            // Only increment if we are NOT currently chatting with this user
+            if (msg.senderId !== selectedFriendId) {
+                setFriends(prev => prev.map(friend => {
+                    if (friend.id === msg.senderId) {
+                        return {
+                            ...friend,
+                            unreadCount: (friend.unreadCount || 0) + 1
+                        }
+                    }
+                    return friend
+                }))
+            }
+        }
+
+        socket.on("message_new", handleNewMessage)
+
+        return () => {
+            socket.off("message_new", handleNewMessage)
+        }
+    }, [socket, selectedFriendId])
 
     const loadFriends = async () => {
         try {
@@ -196,7 +225,11 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
                             {friends.map((friend) => (
                                 <button
                                     key={friend.id}
-                                    onClick={() => onSelectFriend(friend)}
+                                    onClick={() => {
+                                        onSelectFriend(friend)
+                                        // clear locally
+                                        setFriends(prev => prev.map(f => f.id === friend.id ? { ...f, unreadCount: 0 } : f))
+                                    }}
                                     className={cn(
                                         "w-full p-4 flex items-center gap-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer",
                                         selectedFriendId === friend.id && "bg-cyan-50 dark:bg-cyan-900/10"
@@ -209,7 +242,14 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
                                         <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{friend.name || friend.email}</p>
                                         <p className="text-xs text-slate-500 truncate">{friend.email}</p>
                                     </div>
-                                    <MessageCircle className="w-5 h-5 text-slate-400" />
+                                    <div className="flex flex-col items-end gap-1">
+                                        {friend.unreadCount && friend.unreadCount > 0 ? (
+                                            <span className="bg-emerald-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center shadow-sm">
+                                                {friend.unreadCount}
+                                            </span>
+                                        ) : null}
+                                        <MessageCircle className="w-5 h-5 text-slate-400" />
+                                    </div>
                                 </button>
                             ))}
                         </div>
