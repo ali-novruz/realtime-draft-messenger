@@ -46,7 +46,7 @@ export default function Home() {
               <img src="/logo.svg" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-md" />
             </div>
             <h1 className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-slate-100 dark:to-slate-400 hidden sm:block">
-              Live Draft Messenger
+              Realtime Draft Messenger
             </h1>
           </div>
 

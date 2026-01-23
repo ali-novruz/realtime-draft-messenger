@@ -11,7 +11,7 @@ const app = express();
 // Allow all origins in development, specific origins in production
 const allowedOrigins: string[] = [
     "http://localhost:3000",
-    "https://realtime-draft-messenger-web.vercel.app",
+    "https://realtimedraftmessenger.vercel.app",
     "https://realtime-draft-messenger.vercel.app",
     process.env.CORS_ORIGIN || ""
 ].filter((origin): origin is string => Boolean(origin));

@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Live Draft Chat",
-  description: "Real-time chat with live drafts",
+  title: "Realtime Draft Messenger",
+  description: "Real-time chat with live drafts - Realtime Draft Messenger",
   icons: {
     icon: "/logo.svg",
     shortcut: "/logo.svg",
