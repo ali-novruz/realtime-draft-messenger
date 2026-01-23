@@ -114,7 +114,7 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
     }
 
     return (
-        <div className="w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full transition-colors">
+        <div className="w-full md:w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full transition-colors">
             {/* Search */}
             <div className="p-4 border-b border-slate-100 dark:border-slate-800">
                 <div className="relative">

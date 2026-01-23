@@ -70,7 +70,7 @@ export default function Home() {
       </header>
 
       {/* Main Content - Split View */}
-      <main className="flex-1 flex max-w-7xl mx-auto w-full">
+      <main className="flex-1 flex flex-col md:flex-row max-w-7xl mx-auto w-full">
         {/* Left Sidebar - Friends List */}
         <FriendsList
           onSelectFriend={setSelectedFriend}
