@@ -5,7 +5,7 @@ export function Footer() {
     const currentYear = new Date().getFullYear()
 
     return (
-        <footer className="w-full py-6 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 transition-colors">
+        <footer className="w-full py-6 mt-auto bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 transition-colors flex-shrink-0">
             <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="text-sm text-slate-500 dark:text-slate-400">
                     &copy; 2026 Ali Novruz. All rights reserved.
