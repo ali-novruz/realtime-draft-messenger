@@ -43,6 +43,8 @@ const ensureConversation = async (conversationId: string, senderId: string) => {
     return conversation;
 };
 
+const onlineUsers = new Map<string, Set<string>>(); // userId -> Set<socketId>
+
 export const setupSocketHandlers = (io: Server) => {
     io.on('connection', (socket: Socket) => {
         // Safe user info from JWT middleware
@@ -50,6 +52,14 @@ export const setupSocketHandlers = (io: Server) => {
         const userId = user.userId;
 
         console.log(`✅ User connected: ${userId}`);
+
+        // Handle Presence
+        if (!onlineUsers.has(userId)) {
+            onlineUsers.set(userId, new Set());
+            // Broadcast online status to everyone (simplified for MVP)
+            io.emit('user_status', { userId, status: 'online' });
+        }
+        onlineUsers.get(userId)?.add(socket.id);
 
         socket.on('join_room', async (conversationId: string, callback?: (response: any) => void) => {
             try {
@@ -118,6 +128,32 @@ export const setupSocketHandlers = (io: Server) => {
             }
         });
 
+        socket.on('mark_seen', async (data: { conversationId: string }) => {
+            const { conversationId } = data;
+            try {
+                // Update all messages in conversation where sender is NOT me and seenAt is null
+                await prisma.message.updateMany({
+                    where: {
+                        conversationId,
+                        senderId: { not: userId },
+                        seenAt: null
+                    },
+                    data: {
+                        seenAt: new Date()
+                    }
+                });
+
+                // Notify room that messages were seen by this user
+                io.to(conversationId).emit('messages_seen', {
+                    conversationId,
+                    userId, // who saw the messages
+                    seenAt: new Date()
+                });
+            } catch (error) {
+                console.error("Error marking seen:", error);
+            }
+        });
+
         socket.on('consent_update', async (data: { conversationId: string, enabled: boolean }) => {
             const { conversationId, enabled } = data;
 
@@ -138,6 +174,14 @@ export const setupSocketHandlers = (io: Server) => {
 
         socket.on('disconnect', () => {
             console.log(`User disconnected: ${userId}`);
+            const userSockets = onlineUsers.get(userId);
+            if (userSockets) {
+                userSockets.delete(socket.id);
+                if (userSockets.size === 0) {
+                    onlineUsers.delete(userId);
+                    io.emit('user_status', { userId, status: 'offline' });
+                }
+            }
         });
     });
 };

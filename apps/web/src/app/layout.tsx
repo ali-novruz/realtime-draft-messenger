@@ -18,18 +18,25 @@ export const metadata: Metadata = {
   description: "Real-time chat with live drafts",
 };
 
+import { Footer } from "@/components/Footer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          {children}
+          <div className="flex flex-col min-h-screen">
+            <div className="flex-1">
+              {children}
+            </div>
+            <Footer />
+          </div>
         </Providers>
       </body>
     </html>

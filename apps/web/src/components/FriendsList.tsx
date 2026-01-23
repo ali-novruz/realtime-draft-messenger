@@ -90,7 +90,7 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
             if (res.ok) {
                 setSearchQuery("")
                 setSearchResults([])
-                alert("Arkadaşlık isteği gönderildi!")
+                alert("Friend request sent!")
             }
         } catch (error) {
             console.error("Failed to send request:", error)
@@ -114,27 +114,27 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
     }
 
     return (
-        <div className="w-80 bg-white border-r border-slate-200 flex flex-col h-full">
+        <div className="w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full transition-colors">
             {/* Search */}
-            <div className="p-4 border-b border-slate-100">
+            <div className="p-4 border-b border-slate-100 dark:border-slate-800">
                 <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Kullanıcı ara..."
-                        className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none"
+                        placeholder="Search users..."
+                        className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none dark:text-slate-100"
                     />
                 </div>
 
                 {/* Search Results */}
                 {searchResults.length > 0 && (
-                    <div className="mt-2 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    <div className="mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg max-h-48 overflow-y-auto z-50 relative">
                         {searchResults.map((user) => (
-                            <div key={user.id} className="flex items-center justify-between p-3 hover:bg-slate-50 border-b border-slate-100 last:border-b-0">
+                            <div key={user.id} className="flex items-center justify-between p-3 hover:bg-slate-50 dark:hover:bg-slate-700 border-b border-slate-100 dark:border-slate-700 last:border-b-0">
                                 <div>
-                                    <p className="text-sm font-medium text-slate-900">{user.name || user.email}</p>
+                                    <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{user.name || user.email}</p>
                                     <p className="text-xs text-slate-500">{user.email}</p>
                                 </div>
                                 <button
@@ -150,30 +150,30 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b border-slate-200">
+            <div className="flex border-b border-slate-200 dark:border-slate-800">
                 <button
                     onClick={() => setActiveTab("friends")}
                     className={cn(
                         "flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2",
                         activeTab === "friends"
-                            ? "text-cyan-600 border-b-2 border-cyan-600"
-                            : "text-slate-500 hover:text-slate-700"
+                            ? "text-cyan-600 dark:text-cyan-400 border-b-2 border-cyan-600 dark:border-cyan-400"
+                            : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
                     )}
                 >
                     <Users className="w-4 h-4" />
-                    Arkadaşlar
+                    Friends
                 </button>
                 <button
                     onClick={() => setActiveTab("requests")}
                     className={cn(
                         "flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 relative",
                         activeTab === "requests"
-                            ? "text-cyan-600 border-b-2 border-cyan-600"
-                            : "text-slate-500 hover:text-slate-700"
+                            ? "text-cyan-600 dark:text-cyan-400 border-b-2 border-cyan-600 dark:border-cyan-400"
+                            : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
                     )}
                 >
                     <UserPlus className="w-4 h-4" />
-                    İstekler
+                    Requests
                     {pendingRequests.length > 0 && (
                         <span className="absolute top-2 right-4 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                             {pendingRequests.length}
@@ -186,27 +186,27 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
             <div className="flex-1 overflow-y-auto">
                 {activeTab === "friends" ? (
                     friends.length === 0 ? (
-                        <div className="p-8 text-center text-slate-400">
+                        <div className="p-8 text-center text-slate-400 dark:text-slate-500">
                             <Users className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">Henüz arkadaşınız yok</p>
-                            <p className="text-xs mt-1">Yukarıdan kullanıcı arayın</p>
+                            <p className="text-sm">No friends yet</p>
+                            <p className="text-xs mt-1">Search users above</p>
                         </div>
                     ) : (
-                        <div className="divide-y divide-slate-100">
+                        <div className="divide-y divide-slate-100 dark:divide-slate-800">
                             {friends.map((friend) => (
                                 <button
                                     key={friend.id}
                                     onClick={() => onSelectFriend(friend)}
                                     className={cn(
-                                        "w-full p-4 flex items-center gap-3 text-left hover:bg-slate-50 transition-colors",
-                                        selectedFriendId === friend.id && "bg-cyan-50"
+                                        "w-full p-4 flex items-center gap-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors",
+                                        selectedFriendId === friend.id && "bg-cyan-50 dark:bg-cyan-900/10"
                                     )}
                                 >
                                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm">
                                         {(friend.name || friend.email).slice(0, 2).toUpperCase()}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-medium text-slate-900 truncate">{friend.name || friend.email}</p>
+                                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{friend.name || friend.email}</p>
                                         <p className="text-xs text-slate-500 truncate">{friend.email}</p>
                                     </div>
                                     <MessageCircle className="w-5 h-5 text-slate-400" />
@@ -216,19 +216,19 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
                     )
                 ) : (
                     pendingRequests.length === 0 ? (
-                        <div className="p-8 text-center text-slate-400">
+                        <div className="p-8 text-center text-slate-400 dark:text-slate-500">
                             <UserPlus className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">Bekleyen istek yok</p>
+                            <p className="text-sm">No pending requests</p>
                         </div>
                     ) : (
-                        <div className="divide-y divide-slate-100">
+                        <div className="divide-y divide-slate-100 dark:divide-slate-800">
                             {pendingRequests.map((request) => (
                                 <div key={request.id} className="p-4 flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-sm">
                                         {(request.sender.name || request.sender.email).slice(0, 2).toUpperCase()}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-medium text-slate-900 truncate">{request.sender.name || request.sender.email}</p>
+                                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{request.sender.name || request.sender.email}</p>
                                         <p className="text-xs text-slate-500 truncate">{request.sender.email}</p>
                                     </div>
                                     <div className="flex gap-2">
@@ -240,7 +240,7 @@ export default function FriendsList({ onSelectFriend, selectedFriendId }: Friend
                                         </button>
                                         <button
                                             onClick={() => respondToRequest(request.id, "reject")}
-                                            className="p-2 bg-slate-200 text-slate-600 rounded-lg hover:bg-slate-300 transition-colors"
+                                            className="p-2 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
                                         >
                                             <X className="w-4 h-4" />
                                         </button>
