@@ -40,8 +40,10 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300 flex-shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-              <MessageCircle className="w-6 h-6" />
+            <div className="w-10 h-10 relative flex items-center justify-center">
+              {/* Logo with Glow Effect */}
+              <div className="absolute inset-0 bg-cyan-500/20 blur-xl rounded-full"></div>
+              <img src="/logo.svg" alt="Logo" className="w-full h-full object-contain relative z-10 drop-shadow-md" />
             </div>
             <h1 className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-slate-100 dark:to-slate-400 hidden sm:block">
               Live Draft Messenger
