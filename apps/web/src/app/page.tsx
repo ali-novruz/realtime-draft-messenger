@@ -90,10 +90,9 @@ export default function Home() {
                   <p className="text-sm text-slate-500">{selectedFriend.email}</p>
                 </div>
               </div>
-              {/* @ts-ignore */}
               <Chat
-                userId={session.user.id}
-                token={session.user.socketToken}
+                userId={session.user.id || ""}
+                token={session.user.socketToken || ""}
                 friendId={selectedFriend.id}
                 friendName={selectedFriend.name || selectedFriend.email}
               />
