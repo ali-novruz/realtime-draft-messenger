@@ -121,5 +121,5 @@ This project is open source and available under the [MIT License](LICENSE).
 ---
 
 <p align="center">
-  Built with ❤️ by [Ali Novruz](https://github.com/ali-novruz)
+  Built with ❤️ by <a href="https://github.com/ali-novruz">Ali Novruz</a>
 </p>
