@@ -300,9 +300,9 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
                     const isMe = msg.senderId === userId
                     const isOptimistic = msg.id?.startsWith('temp_')
                     return (
-                        <div key={msg.id || idx} className={cn("flex flex-col max-w-[80%]", isMe ? "ml-auto items-end" : "items-start")}>
+                        <div key={msg.id || idx} className={cn("flex flex-col max-w-[75%] min-w-0", isMe ? "ml-auto items-end" : "items-start")}>
                             <div className={cn(
-                                "px-4 py-2.5 shadow-sm text-sm relative group transition-all duration-200 whitespace-pre-wrap break-words",
+                                "px-4 py-2.5 shadow-sm text-sm relative group transition-all duration-200 whitespace-pre-wrap break-words break-all",
                                 isMe
                                     ? "bg-gradient-to-br from-cyan-500 to-blue-600 text-white rounded-2xl rounded-br-none"
                                     : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-none",
@@ -341,7 +341,7 @@ export default function Chat({ userId, token, friendId, friendName }: ChatProps)
                                     Typing...
                                 </span>
                             </div>
-                            <div className="px-4 py-2.5 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-200 border-2 border-dashed border-emerald-200 dark:border-emerald-800 rounded-2xl rounded-bl-none italic text-sm w-full relative overflow-hidden shadow-sm whitespace-pre-wrap break-words">
+                            <div className="px-4 py-2.5 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-200 border-2 border-dashed border-emerald-200 dark:border-emerald-800 rounded-2xl rounded-bl-none italic text-sm w-full relative overflow-hidden shadow-sm whitespace-pre-wrap break-words break-all">
                                 {text}
                             </div>
                         </div>
