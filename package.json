@@ -1,0 +1,15 @@
+{
+  "name": "antigravity",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "pnpm -r run build",
+    "postinstall": "pnpm --filter=@repo/database run generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.1"
+}
