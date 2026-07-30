@@ -10,7 +10,10 @@ export const useSocket = () => {
     return useContext(SocketContext);
 };
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "https://realtime-draft-messenger.onrender.com";
+// Defaults to same-origin: the socket server is reverse-proxied on the same
+// domain as the web app (Traefik routes /socket.io/* to it), so no separate
+// subdomain or env var is required unless serving them from different hosts.
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || (typeof window !== "undefined" ? window.location.origin : "");
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const [socket, setSocket] = useState<Socket | null>(null);

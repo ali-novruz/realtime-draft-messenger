@@ -8,13 +8,12 @@ import { authMiddleware } from './socket/auth.middleware';
 
 const app = express();
 
-// Allow all origins in development, specific origins in production
+// CORS_ORIGIN is a comma-separated list of allowed origins for production;
+// localhost is always allowed for local development.
 const allowedOrigins: string[] = [
     "http://localhost:3000",
-    "https://realtimedraftmessenger.vercel.app",
-    "https://realtime-draft-messenger.vercel.app",
-    process.env.CORS_ORIGIN || ""
-].filter((origin): origin is string => Boolean(origin));
+    ...(process.env.CORS_ORIGIN?.split(',').map((o) => o.trim()).filter(Boolean) ?? [])
+];
 
 app.use(cors({
     origin: allowedOrigins,
@@ -43,27 +42,10 @@ app.get('/', (req, res) => {
     res.send(`Live Draft Chat Server Running`);
 });
 
-import { prisma } from '@repo/database';
-
 const PORT = process.env.PORT || 3001;
 
-// Programmatic Migration Check
-// This ensures the database is in sync even if the build script's db:push failed
-const runMigrations = async () => {
-    try {
-        console.log("Checking database schema...");
-        // Ensure seenAt column exists (Hotfix for Render P2022)
-        await prisma.$executeRawUnsafe(`
-            ALTER TABLE "Message" ADD COLUMN IF NOT EXISTS "seenAt" TIMESTAMP(3);
-        `);
-        console.log("✅ Database schema verified (seenAt checked)");
-    } catch (e) {
-        console.error("⚠️ Migration check failed:", e);
-    }
-};
-
-runMigrations().then(() => {
-    httpServer.listen(PORT, () => {
-        console.log(`Server listening on port ${PORT}`);
-    });
+// Schema sync (`prisma db push`) runs in docker-entrypoint.sh before this
+// process starts, so by the time we're here the schema is already current.
+httpServer.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
 });

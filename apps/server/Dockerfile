@@ -19,7 +19,6 @@ COPY --from=builder /app/packages ./packages
 # Copy the server application preserving directory structure
 COPY --from=builder /app/apps/server ./apps/server
 
-# Run from the server directory
-WORKDIR /app/apps/server
+RUN chmod +x apps/server/docker-entrypoint.sh
 EXPOSE 3001
-CMD ["node", "dist/index.js"]
+ENTRYPOINT ["apps/server/docker-entrypoint.sh"]

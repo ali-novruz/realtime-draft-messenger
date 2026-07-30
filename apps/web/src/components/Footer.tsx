@@ -17,9 +17,9 @@ export function Footer() {
                         <span className="hidden sm:inline">alinovruz29@gmail.com</span>
                     </a>
 
-                    <a href="https://alinovruz.app" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
+                    <a href="https://alinovruz.tech/tr/projects" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
                         <Globe className="w-4 h-4" />
-                        <span className="hidden sm:inline">alinovruz.app</span>
+                        <span className="hidden sm:inline">More of my projects</span>
                     </a>
 
                     <a href="https://linkedin.com/in/ali-novruz-447115356" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-blue-600 transition-colors" title="LinkedIn">

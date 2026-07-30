@@ -1,22 +1,72 @@
-version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: livedraft
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U user']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    # Internal only — not published to the host.
 
   redis:
-    image: redis:alpine
-    restart: always
-    ports:
-      - "6379:6379"
+    image: redis:7-alpine
+    restart: unless-stopped
+    # Internal only — a self-hosted swap for what was Upstash; the client
+    # library (node-redis) already speaks plain redis:// with no code changes.
+
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://user:${POSTGRES_PASSWORD}@postgres:5432/livedraft?schema=public
+      DIRECT_URL: postgresql://user:${POSTGRES_PASSWORD}@postgres:5432/livedraft?schema=public
+      REDIS_URL: redis://redis:6379
+      PORT: 3001
+      CORS_ORIGIN: https://chat.alinovruz.tech
+      JWT_SECRET: ${JWT_SECRET}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.chat-server.rule=Host(`chat.alinovruz.tech`) && PathPrefix(`/socket.io`)
+      - traefik.http.routers.chat-server.entrypoints=websecure
+      - traefik.http.routers.chat-server.tls.certresolver=letsencrypt
+      - traefik.http.routers.chat-server.priority=10
+      - traefik.http.services.chat-server.loadbalancer.server.port=3001
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://user:${POSTGRES_PASSWORD}@postgres:5432/livedraft?schema=public
+      DIRECT_URL: postgresql://user:${POSTGRES_PASSWORD}@postgres:5432/livedraft?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+      AUTH_SECRET: ${AUTH_SECRET}
+      AUTH_TRUST_HOST: 'true'
+      NEXT_PUBLIC_SOCKET_URL: https://chat.alinovruz.tech
+      NODE_ENV: production
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.chat-web.rule=Host(`chat.alinovruz.tech`)
+      - traefik.http.routers.chat-web.entrypoints=websecure
+      - traefik.http.routers.chat-web.tls.certresolver=letsencrypt
+      - traefik.http.routers.chat-web.priority=1
+      - traefik.http.services.chat-web.loadbalancer.server.port=3000
 
 volumes:
   postgres_data:

@@ -6,10 +6,15 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { AuthTokenPayload } from "@repo/shared"
 
-// IMPORTANT: In production, use process.env.NEXTAUTH_SECRET
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-key-change-me"
+// Only enforced at actual runtime — `next build`'s page-data-collection phase
+// also sets NODE_ENV=production but hasn't been given real env vars yet.
+if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE !== 'phase-production-build') {
+    throw new Error('JWT_SECRET env var is not set — required in production to sign socket tokens')
+}
+const JWT_SECRET = process.env.JWT_SECRET || "dev-only-secret"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+    secret: process.env.AUTH_SECRET,
     providers: [
         CredentialsProvider({
             name: "Credentials",
